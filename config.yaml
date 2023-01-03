@@ -1,0 +1,119 @@
+---
+counters:
+- name: "http_requests_total"
+  help: "http requests by status code"
+  labels:
+  - "code"
+  - "method"
+  schedule:
+  - intervals: 1
+    behaviors:
+    - labels:
+        code: "200"
+        method: "GET"
+      add: 5
+  - intervals: 1
+    behaviors:
+    - labels:
+        code: "200"
+        method: "GET"
+      add: 1
+
+gauges:
+- name: "cpu_usage_pct"
+  help: "cpu usage as percentage"
+  labels:
+  - "code"
+  - "method"
+  schedule:
+  - intervals: 5
+    behaviors:
+    - labels:
+        code: "200"
+        method: "GET"
+      value: 5
+    - labels:
+        code: "500"
+        method: "GET"
+      value: 1
+
+histograms:
+- name: "http_requests_latency_ms"
+  help: "http request latency histogram"
+  labels:
+  - "code"
+  - "method"
+  buckets:
+  - 5
+  - 10
+  - 20
+  - 30
+  - 40
+  - 50
+  - 100
+  - 200
+  - 300
+  - 400
+  - 500
+  - 1000
+  - 2000
+  - 3000
+  - 4000
+  - 5000
+  schedule:
+  - intervals: 5
+    behaviors:
+    - values:
+      - "5|1"
+      - "50|10"
+      - "100|7"
+      - "400|4"
+      labels:
+        code: "200"
+        method: "GET"
+  - intervals: 1
+    behaviors:
+    - values:
+      - "5|1"
+      - "50|10"
+      - "100|7"
+      - "400|4"
+      - "5000|2"
+      - "inf|1"
+      labels:
+        code: "200"
+        method: "GET"
+
+summaries:
+- name: "http_requests_latency_ms_summary"
+  help: "http request latency summary"
+  maxAge: "1m"
+  labels:
+  - "code"
+  - "method"
+  quantiles:
+  - "0.99|0.01"
+  - "0.95|0.01"
+  - "0.50|0.01"
+  schedule:
+  - intervals: 1
+    behaviors:
+    - values:
+      - "100|5"
+      - "1|1"
+      - "15|3"
+      labels:
+        code: 200
+        method: "GET"
+
+untyped:
+- name: "sample_untyped_metric"
+  help: "sample untyped metric"
+  staticLabels:
+    code: "200"
+    method: "GET"
+  schedule:
+  - scrapes: 1
+    value: 5
+  - scrapes: 2
+    value: 10

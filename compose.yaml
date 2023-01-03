@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  rumpelstiltskin:
+    build:
+      context: .
+    image: rumpelstiltskin:dev
+    ports:
+    - target: 9090
+      published: 9090
+      protocol: tcp
+      mode: host
+    configs:
+    - source: rumpelstiltskin
+      target: /config.yaml
+  prometheus:
+    image: prom/prometheus:v2.41.0
+    ports:
+    - target: 9090
+      published: 80
+      protocol: tcp
+      mode: host
+    configs:
+    - source: prometheus
+      target: /etc/prometheus/prometheus.yml
+
+configs:
+  rumpelstiltskin:
+    file: ./config.yaml
+  prometheus:
+    file: ./prometheus.yaml
